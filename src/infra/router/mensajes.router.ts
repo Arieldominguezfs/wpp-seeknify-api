@@ -1,20 +1,18 @@
-import { Router, Request, Response } from 'express';
-import { guardarMensajeCompleto } from '../../services/mensajes.service';
+import { Router,} from 'express';
+import { MensajesController } from '../controller/mensaje.controller';
+import { MensajesService } from '../../services/mensajes.service';
+const mensajesRouter = Router();
+const mensajesService = new MensajesService();
+const mensajesController = new MensajesController(mensajesService);
 
-export const mensajesRouter = Router();
+//mensajesRouter.post('/', async (req, res) => mensajesController.crearMensaje(req, res));
 
-mensajesRouter.post('/', async (req: Request, res: Response) => {
-    const { mensaje, emisor, nombreAgente, numeroCliente, fecha } = req.body;
-
-    if (!mensaje || !emisor || !nombreAgente || !numeroCliente || !fecha) {
-        return res.status(400).json({ error: 'Faltan campos obligatorios.' });
-    }
-
-    const resultado = await guardarMensajeCompleto({ mensaje, emisor, nombreAgente, numeroCliente, fecha });
-
-    if (resultado.error) {
-        return res.status(500).json({ error: resultado.message });
-    }
-
-    return res.status(201).json(resultado.mensaje);
+mensajesRouter.post('/', async (req, res) => {
+  try {
+    await mensajesController.crearMensaje(req, res);
+  } catch (error) {
+    console.error('Error al crear el mensaje:', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
 });
+export default mensajesRouter;

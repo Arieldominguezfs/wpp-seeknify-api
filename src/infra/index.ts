@@ -4,7 +4,7 @@ import * as bodyParser from 'body-parser';
 import cors from 'cors';
 import { AppDataSource } from './database/data-source'; // <-- Importa tu DataSource
 import { obtenerTodosLosAgentes } from './database/repositories/agentes.repository';
-import { mensajesRouter } from './router/mensajes.router';
+import  mensajesRouter from './router/mensajes.router';
 
 const app: express.Application = express();
 const PORT = 8080;
