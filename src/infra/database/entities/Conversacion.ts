@@ -14,13 +14,14 @@ export class Conversacion {
     clienteid!: number;
 
     @CreateDateColumn({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
-    fechaInicio!: Date;
+    fechainicio!: Date;
 
     @ManyToOne(() => AgenteIA)
-    @JoinColumn({ name: 'AgenteID' })
+    @JoinColumn({ name: 'agenteid' })
     agente!: AgenteIA;
 
     @ManyToOne(() => Cliente)
-    @JoinColumn({ name: 'ClienteID' })
+    @JoinColumn({ name: 'clienteid' })
     cliente!: Cliente;
+
 }

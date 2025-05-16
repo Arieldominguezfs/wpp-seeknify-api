@@ -6,7 +6,7 @@ export class Cliente {
     clienteid!: number;
 
     @Column({ type: 'varchar', length: 20, unique: true })
-    numerowhatsApp!: string;
+    numerowhatsapp!: string;
 
     @Column({ type: 'varchar', length: 255, nullable: true })
     nombre!: string;

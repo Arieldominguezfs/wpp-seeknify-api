@@ -4,12 +4,15 @@ import * as bodyParser from 'body-parser';
 import cors from 'cors';
 import { AppDataSource } from './database/data-source'; // <-- Importa tu DataSource
 import { obtenerTodosLosAgentes } from './database/repositories/agentes.repository';
+import { mensajesRouter } from './router/mensajes.router';
 
 const app: express.Application = express();
 const PORT = 8080;
 
 AppDataSource.initialize()
   .then(async () => {
+    app.use(express.json());
+    app.use('/mensajes', mensajesRouter);
     console.log('Conexión a la base de datos establecida');
 
     // Mostrar listado de todos los agentes IA al iniciar

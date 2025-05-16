@@ -19,6 +19,6 @@ export class Mensaje {
     contenido!: string;
 
     @ManyToOne(() => Conversacion)
-    @JoinColumn({ name: 'ConversacionID' })
+    @JoinColumn({ name: 'conversacionid' })
     conversacion!: Conversacion;
 }
