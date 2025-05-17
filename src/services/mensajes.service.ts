@@ -1,11 +1,29 @@
 import { buscarAgentePorNombre } from '../infra/database/repositories/agentes.repository';
 import { buscarClientePorNumero, crearCliente } from '../infra/database/repositories/cliente.repository';
-import { buscarConversacion, crearConversacion } from '../infra/database/repositories/conversacion.repository';
-import { crearMensaje } from '../infra/database/repositories/mensaje.repository';
+import { buscarConversacion, crearConversacion,buscarConversacionPorAgenteYCliente } from '../infra/database/repositories/conversacion.repository';
+import { crearMensaje,obtenerMensajesPorConversacion } from '../infra/database/repositories/mensaje.repository';
 import { Mensaje } from '../domain/interfaces/mensajes.interface';
 
 
 export class MensajesService {
+
+  async obtenerConversacion(nombreAgente: string, numeroCliente: string): Promise<{ contenido: string, emisor: string, fechaHora: Date }[]> {
+    const conversacion = await buscarConversacionPorAgenteYCliente(nombreAgente, numeroCliente);
+
+    if (!conversacion) {
+      console.error(`No se encontró una conversación entre el agente ${nombreAgente} y el cliente ${numeroCliente}`);
+      return [];
+    }
+
+    const mensajes = await obtenerMensajesPorConversacion(conversacion.conversacionid);
+
+    return mensajes.map(m => ({
+      contenido: m.contenido,
+      emisor: m.emisor,
+      fechaHora: m.fechahora,
+    }));
+  }
+
   async guardarMensaje(mensajeData: Mensaje): Promise<boolean> {
     const { mensaje, emisor, nombreAgente,nombreCliente, numeroCliente, fecha } = mensajeData;
 

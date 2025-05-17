@@ -4,10 +4,10 @@ import * as bodyParser from 'body-parser';
 import cors from 'cors';
 import { AppDataSource } from './database/data-source'; // <-- Importa tu DataSource
 import { obtenerTodosLosAgentes } from './database/repositories/agentes.repository';
-import  mensajesRouter from './router/mensajes.router';
+import mensajesRouter from './router/mensajes.router';
 
 const app: express.Application = express();
-const PORT = 8080;
+const PORT = 8080; // Puerto definido directamente en el código
 
 AppDataSource.initialize()
   .then(async () => {
@@ -27,11 +27,12 @@ AppDataSource.initialize()
     app.use(bodyParser.json({ limit: '15mb' }));
 
     app.listen(PORT, () => {
-      console.log(`Servidor corriendo en http://localhost:8080`);
+      console.log(`Servidor corriendo en http://localhost:${PORT}`);
     });
   })
   .catch((error) => {
-    console.error('Error al conectar a la base de datos', error);
+    console.log('Error al conectar a la base de datos:', error.message);
+    console.log('Detalles del error:', error);
     process.exit(1); // Opcional: termina el proceso si falla la conexión
   });
 
