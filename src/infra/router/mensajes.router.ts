@@ -1,12 +1,14 @@
-import { Router,} from 'express';
+import { Router } from 'express';
 import { MensajesController } from '../controller/mensaje.controller';
 import { MensajesService } from '../../services/mensajes.service';
+import { autenticarToken } from '../../middlewares/auth.middleware'; // 🔥 Importar el middleware
+
 const mensajesRouter = Router();
 const mensajesService = new MensajesService();
 const mensajesController = new MensajesController(mensajesService);
 
-
-mensajesRouter.post('/', async (req, res) => {
+// 🔥 Ruta protegida: solo accesible si el usuario tiene un token válido
+mensajesRouter.post('/', autenticarToken, async (req, res) => {
   try {
     await mensajesController.crearMensaje(req, res);
   } catch (error) {
@@ -15,7 +17,7 @@ mensajesRouter.post('/', async (req, res) => {
   }
 });
 
-mensajesRouter.get('/:nombreAgente/:numeroCliente', async (req, res) => {
+mensajesRouter.get('/:nombreAgente/:numeroCliente', autenticarToken, async (req, res) => {
   try {
     await mensajesController.obtenerConversacion(req, res);
   } catch (error) {
@@ -23,4 +25,5 @@ mensajesRouter.get('/:nombreAgente/:numeroCliente', async (req, res) => {
     res.status(500).json({ error: 'Error interno del servidor.' });
   }
 });
+
 export default mensajesRouter;

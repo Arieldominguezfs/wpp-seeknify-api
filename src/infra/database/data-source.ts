@@ -4,6 +4,7 @@ import { AgenteIA } from './entities/AgentesIA';
 import { Cliente } from './entities/Cliente';
 import { Conversacion } from './entities/Conversacion';
 import { Mensaje } from './entities/Mensaje';
+import { Usuario } from './entities/Usuario';
 
 export const AppDataSource = new DataSource({
     type: 'postgres',
@@ -14,7 +15,7 @@ export const AppDataSource = new DataSource({
     database: 'seeknify',
     synchronize: false, // true solo en desarrollo
     logging: false,
-    entities: [AgenteIA, Cliente, Conversacion, Mensaje],
+    entities: [AgenteIA, Cliente, Conversacion, Mensaje, Usuario],
     migrations: [],
     subscribers: [],
 });
