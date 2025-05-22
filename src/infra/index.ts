@@ -29,11 +29,11 @@ AppDataSource.initialize()
 
     // Mostrar listado de todos los agentes IA al iniciar
     const agentes = await obtenerTodosLosAgentes();
-    console.log('Listado de AgentesIA:');
+    /*console.log('Listado de AgentesIA:');
     const contraseña = "seekAdmin";
   const salt = await bcrypt.genSalt(10); // Genera una "sal" para mayor seguridad
   const hash = await bcrypt.hash(contraseña, salt); // Encripta la contraseña
-  console.log("Hash generado:", hash);
+  console.log("Hash generado:", hash);*/
     agentes.forEach(a => {
       console.log(`ID: ${a.agenteid} | Nombre: ${a.nombre}`);
     });
