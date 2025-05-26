@@ -19,7 +19,7 @@ mensajesRouter.post('/', autenticarToken, async (req, res) => {
 
 mensajesRouter.get('/:nombreAgente/:numeroCliente', autenticarToken, async (req, res) => {
   try {
-    await mensajesController.obtenerConversacion(req, res);
+    await mensajesController.obtenerConversacionPaginado(req, res);
   } catch (error) {
     console.error('Error al obtener la conversación:', error);
     res.status(500).json({ error: 'Error interno del servidor.' });

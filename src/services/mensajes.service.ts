@@ -1,28 +1,36 @@
 import { buscarAgentePorNombre } from '../infra/database/repositories/agentes.repository';
 import { buscarClientePorNumero, crearCliente } from '../infra/database/repositories/cliente.repository';
 import { buscarConversacion, crearConversacion,buscarConversacionPorAgenteYCliente } from '../infra/database/repositories/conversacion.repository';
-import { crearMensaje,obtenerMensajesPorConversacion } from '../infra/database/repositories/mensaje.repository';
+import { crearMensaje,obtenerMensajesPorConversacionPorPagina } from '../infra/database/repositories/mensaje.repository';
 import { Mensaje } from '../domain/interfaces/mensajes.interface';
 
 
 export class MensajesService {
 
-  async obtenerConversacion(nombreAgente: string, numeroCliente: string): Promise<{ contenido: string, emisor: string, fechaHora: Date }[]> {
-    const conversacion = await buscarConversacionPorAgenteYCliente(nombreAgente, numeroCliente);
+  async obtenerConversacionPorPaginado(
+  nombreAgente: string, 
+  numeroCliente: string, 
+  pagina: number = 1, 
+  limite: number = 20
+): Promise<{ contenido: string, emisor: string, fechaHora: Date }[]> {
 
-    if (!conversacion) {
-      console.error(`No se encontró una conversación entre el agente ${nombreAgente} y el cliente ${numeroCliente}`);
-      return [];
-    }
+  const conversacion = await buscarConversacionPorAgenteYCliente(nombreAgente, numeroCliente);
 
-    const mensajes = await obtenerMensajesPorConversacion(conversacion.conversacionid);
-
-    return mensajes.map(m => ({
-      contenido: m.contenido,
-      emisor: m.emisor,
-      fechaHora: m.fechahora,
-    }));
+  if (!conversacion) {
+    console.error(`No se encontró una conversación entre el agente ${nombreAgente} y el cliente ${numeroCliente}`);
+    return [];
   }
+
+  // 🔥 Ahora recibe "pagina" y "limite" correctamente
+  const mensajes = await obtenerMensajesPorConversacionPorPagina(conversacion.conversacionid, pagina, limite);
+
+  return mensajes.map(m => ({
+    contenido: m.contenido,
+    emisor: m.emisor,
+    fechaHora: m.fechahora,
+  }));
+}
+
 
   async guardarMensaje(mensajeData: Mensaje): Promise<boolean> {
     const { mensaje, emisor, nombreAgente,nombreCliente, numeroCliente, fecha } = mensajeData;
