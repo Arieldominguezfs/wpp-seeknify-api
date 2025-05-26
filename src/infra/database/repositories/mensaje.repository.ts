@@ -32,3 +32,7 @@ export async function obtenerMensajesPorConversacionPorPagina(
     .getMany();
 }
 
+export async function obtenerCantidadMensajes(conversacionid: number): Promise<number> {
+  return await MensajeRepository.count({ where: { conversacionid } });
+}
+

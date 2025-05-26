@@ -1,35 +1,48 @@
 import { buscarAgentePorNombre } from '../infra/database/repositories/agentes.repository';
 import { buscarClientePorNumero, crearCliente } from '../infra/database/repositories/cliente.repository';
 import { buscarConversacion, crearConversacion,buscarConversacionPorAgenteYCliente } from '../infra/database/repositories/conversacion.repository';
-import { crearMensaje,obtenerMensajesPorConversacionPorPagina } from '../infra/database/repositories/mensaje.repository';
+import { crearMensaje,obtenerMensajesPorConversacionPorPagina, obtenerCantidadMensajes } from '../infra/database/repositories/mensaje.repository';
 import { Mensaje } from '../domain/interfaces/mensajes.interface';
 
 
 export class MensajesService {
 
-  async obtenerConversacionPorPaginado(
+async obtenerConversacionPorPaginado(
   nombreAgente: string, 
   numeroCliente: string, 
   pagina: number = 1, 
   limite: number = 20
-): Promise<{ contenido: string, emisor: string, fechaHora: Date }[]> {
+): Promise<{ mensajes: { contenido: string, emisor: string, fechaHora: Date }[], totalMensajes: number, estado: string }> {
 
   const conversacion = await buscarConversacionPorAgenteYCliente(nombreAgente, numeroCliente);
 
   if (!conversacion) {
     console.error(`No se encontró una conversación entre el agente ${nombreAgente} y el cliente ${numeroCliente}`);
-    return [];
+    return { mensajes: [], totalMensajes: 0, estado: 'sin_conversacion' };
   }
 
-  // 🔥 Ahora recibe "pagina" y "limite" correctamente
-  const mensajes = await obtenerMensajesPorConversacionPorPagina(conversacion.conversacionid, pagina, limite);
+  const totalMensajes = await obtenerCantidadMensajes(conversacion.conversacionid); // 🔥 Método para contar mensajes totales
+  const offset = (pagina - 1) * limite;
 
-  return mensajes.map(m => ({
+  if (totalMensajes === 0) {
+    return { mensajes: [], totalMensajes, estado: 'sin_mensajes' };
+  }
+
+  if (offset >= totalMensajes) {
+    return { mensajes: [], totalMensajes, estado: 'pagina_fuera_de_rango' };
+  }
+
+  const mensajesDB = await obtenerMensajesPorConversacionPorPagina(conversacion.conversacionid, pagina, limite);
+
+  const mensajes = mensajesDB.map(m => ({
     contenido: m.contenido,
     emisor: m.emisor,
     fechaHora: m.fechahora,
   }));
+
+  return { mensajes, totalMensajes, estado: 'ok' };
 }
+
 
 
   async guardarMensaje(mensajeData: Mensaje): Promise<boolean> {

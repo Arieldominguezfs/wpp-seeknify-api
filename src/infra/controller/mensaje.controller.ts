@@ -32,26 +32,35 @@ export class MensajesController {
   }
 
   async obtenerConversacionPaginado(req: Request, res: Response): Promise<Response> {
-    try {
-      const { nombreAgente, numeroCliente } = req.params;
-      const pagina = parseInt(req.query.pagina as string) || 1;
-      const limite = parseInt(req.query.limite as string) || 20; // Valor por defecto de 20 mensajes
+  try {
+    const { nombreAgente, numeroCliente } = req.params;
+    const pagina = parseInt(req.query.pagina as string) || 1;
+    const limite = parseInt(req.query.limite as string) || 20;
 
-      if (!numeroCliente || !nombreAgente) {
-        return res.status(400).json({ error: 'Se requiere el número de WhatsApp del cliente.' });
-      }
-
-      const mensajes = await this.mensajesService.obtenerConversacionPorPaginado(nombreAgente, numeroCliente, pagina, limite);
-
-      if (mensajes.length === 0) {
-        return res.status(404).json({ error: 'No se encontraron mensajes para este cliente.' });
-      }
-
-      return res.status(200).json({ mensajes, pagina, limite });
-
-    } catch (error) {
-      console.error('Error al obtener la conversación:', error);
-      return res.status(500).json({ error: 'Error interno del servidor.' });
+    if (!numeroCliente || !nombreAgente) {
+      return res.status(400).json({ error: 'Se requiere el número de WhatsApp del cliente.' });
     }
+
+    const { mensajes, totalMensajes, estado } = await this.mensajesService.obtenerConversacionPorPaginado(nombreAgente, numeroCliente, pagina, limite);
+
+    if (estado === 'sin_conversacion') {
+      return res.status(404).json({ error: 'No existe una conversación entre el agente y el cliente.' });
+    }
+
+    if (estado === 'sin_mensajes') {
+      return res.status(200).json({ mensajes: [], totalMensajes, mensaje: 'La conversación existe, pero aún no hay mensajes.' });
+    }
+
+    if (estado === 'pagina_fuera_de_rango') {
+      return res.status(200).json({ mensajes: [], totalMensajes, mensaje: 'No hay más mensajes disponibles en esta conversación.' });
+    }
+
+    return res.status(200).json({ mensajes, pagina, limite, totalMensajes });
+
+  } catch (error) {
+    console.error('Error al obtener la conversación:', error);
+    return res.status(500).json({ error: 'Error interno del servidor.' });
   }
+}
+
 }
