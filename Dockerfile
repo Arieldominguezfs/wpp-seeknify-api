@@ -15,7 +15,7 @@ RUN npm install
 COPY . .
 
 # Compilamos el código TypeScript
-RUN npm run build
+RUN npm install & npm run build
 
 EXPOSE 8080
 
