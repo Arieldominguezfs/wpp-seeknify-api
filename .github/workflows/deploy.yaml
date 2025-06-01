@@ -25,17 +25,17 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/my-backend-app .
+          docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/seeknify-app .
 
       - name: Push Docker image
         run: |
           gcloud auth configure-docker
-          docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/my-backend-app
+          docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/seeknify-app
 
       - name: Deploy to Cloud Run
         run: |
-          gcloud run deploy my-backend-app \
-            --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/my-backend-app \
+          gcloud run deploy seeknify-app \
+            --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/seeknify-app \
             --platform managed \
             --region ${{ secrets.GCP_REGION }} \
             --allow-unauthenticated
