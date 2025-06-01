@@ -14,8 +14,11 @@ export function autenticarToken(req: Request, res: Response, next: NextFunction)
   const token = authHeader.split(' ')[1]; // Extrae solo el token del formato Bearer <token>
 
   try {
+    console.log('Token recibido:', token);
     const usuario = jwt.verify(token, JWT_SECRET);
-    req.body.usuario = usuario; // Guarda el usuario autenticado en la petición
+    console.log('Token verificado:', usuario);
+    //console.log('Usuario autenticado:', req.body);
+    //req.body.usuario = usuario; // Guarda el usuario autenticado en la petición
     next(); // 🔥 Aquí se ejecuta si todo es válido
   } catch (error) {
     console.error('Error de validación de token:', error);
