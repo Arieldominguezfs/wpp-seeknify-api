@@ -23,13 +23,17 @@ jobs:
         with:
           project_id: ${{ secrets.GCP_PROJECT_ID }}
 
-      - name: Run build
+      - name: Install dependencies and build project
         run: npm install && npm run build
 
+      - name: Build Docker image
+        run: docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/seeknify-app .
+
+      - name: Authenticate Docker with GCR
+        run: gcloud auth configure-docker --quiet
+
       - name: Push Docker image
-        run: |
-          gcloud auth configure-docker
-          docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/seeknify-app
+        run: docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/seeknify-app
 
       - name: Deploy to Cloud Run
         run: |
@@ -38,5 +42,3 @@ jobs:
             --platform managed \
             --region ${{ secrets.GCP_REGION }} \
             --allow-unauthenticated
-
-
