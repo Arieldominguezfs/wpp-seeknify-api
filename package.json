@@ -1,12 +1,13 @@
 {
   "name": "wpp-bakend-seeknify",
-  "version": "1.0.0",
+  "version": "1.0.1-alpha1",
   "description": "Seeknify whatsapp backend service",
   "main": "./infra/index.ts",
   "scripts": {
     "dev": "ts-node-dev --respawn src/infra/index.ts",
     "build": "tsc",
-    "start": "npm run build && node dist/infra/index.js"
+    "start": "npm run build && node dist/infra/index.js",
+    "start:prod": "node dist/infra/index.js"
   },
   "engines": {
     "node": ">=18"
