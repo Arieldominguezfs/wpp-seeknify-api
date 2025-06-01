@@ -1,0 +1,22 @@
+# Usa una imagen oficial de Node.js con soporte para TypeScript
+FROM node:18
+
+# Establece el directorio de trabajo
+WORKDIR /app
+
+# Copia los archivos del proyecto
+COPY package*.json ./
+COPY tsconfig*.json ./
+RUN npm install
+
+# Copia el resto del código fuente
+COPY . .
+
+# Compila el proyecto TypeScript
+RUN npm run build
+
+# Expone el puerto
+EXPOSE 8080
+
+# Comando para ejecutar la app
+CMD ["npm", "run", "start"]
