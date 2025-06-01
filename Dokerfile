@@ -1,17 +1,24 @@
 FROM node:18
 
+# Establece el directorio de trabajo
 WORKDIR /app
 
-COPY src /opt/app/src/
-COPY tsconfig* package*.json .npmrc /opt/app/
-COPY package*.json ./
+# Copia solo los archivos necesarios para instalar dependencias
+COPY package.json ./
 COPY tsconfig*.json ./
-WORKDIR /opt/app
+COPY .npmrc ./
+
+# Instala las dependencias
 RUN npm install
 
+# Copia el resto del código fuente
 COPY . .
 
-RUN npm install && npm run build
+# Compila el proyecto TypeScript
+RUN npm run build
+
+# Expone el puerto
 EXPOSE 8080
 
+# Comando de inicio
 CMD ["npm", "run", "start"]
