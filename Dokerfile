@@ -2,14 +2,16 @@ FROM node:18
 
 WORKDIR /app
 
+COPY src /opt/app/src/
+COPY tsconfig* package*.json .npmrc /opt/app/
 COPY package*.json ./
 COPY tsconfig*.json ./
+WORKDIR /opt/app
 RUN npm install
 
 COPY . .
 
-RUN npm run build
-
+RUN npm install && npm run build
 EXPOSE 8080
 
 CMD ["npm", "run", "start"]
