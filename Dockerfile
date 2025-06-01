@@ -6,7 +6,6 @@ WORKDIR /app
 # Copiamos solo lo necesario para instalar deps
 COPY package*.json ./
 COPY tsconfig*.json ./
-COPY .npmrc ./
 
 # Instalamos deps
 RUN npm install
