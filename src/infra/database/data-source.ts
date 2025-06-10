@@ -8,7 +8,7 @@ import { Usuario } from './entities/Usuario';
 
 export const AppDataSource = new DataSource({
     type: 'postgres',
-    host: '34.123.0.219',
+    host: '34.31.48.85',
     port: 5432,
     username: 'seek',
     password: 'Seek200394',

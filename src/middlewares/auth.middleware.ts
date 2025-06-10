@@ -14,7 +14,6 @@ export function autenticarToken(req: Request, res: Response, next: NextFunction)
   const token = authHeader.split(' ')[1]; // Extrae solo el token del formato Bearer <token>
 
   try {
-    console.log('Token recibido:', token);
     const usuario = jwt.verify(token, JWT_SECRET);
     console.log('Token verificado:', usuario);
     //console.log('Usuario autenticado:', req.body);
