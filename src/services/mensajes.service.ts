@@ -1,6 +1,6 @@
 import { buscarAgentePorNombre } from '../infra/database/repositories/agentes.repository';
 import { buscarClientePorNumero, crearCliente } from '../infra/database/repositories/cliente.repository';
-import { buscarConversacion, crearConversacion,buscarConversacionPorAgenteYCliente } from '../infra/database/repositories/conversacion.repository';
+import { buscarConversacion, crearConversacion,buscarConversacionPorAgenteYCliente,obtenerConversacionesPorAgentePaginado } from '../infra/database/repositories/conversacion.repository';
 import { crearMensaje,obtenerMensajesPorConversacionPorPagina, obtenerCantidadMensajes } from '../infra/database/repositories/mensaje.repository';
 import { Mensaje } from '../domain/interfaces/mensajes.interface';
 
@@ -42,6 +42,14 @@ async obtenerConversacionPorPaginado(
 
   return { mensajes, totalMensajes, estado: 'ok' };
 }
+
+ async obtenerConversacionesDeAgente(
+    nombreAgente: string,
+    pagina: number,
+    limite: number
+  ) {
+    return await obtenerConversacionesPorAgentePaginado(nombreAgente, pagina, limite);
+  }
 
 
 

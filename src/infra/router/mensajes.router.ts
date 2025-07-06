@@ -26,4 +26,11 @@ mensajesRouter.get('/:nombreAgente/:numeroCliente', autenticarToken, async (req,
   }
 });
 
+mensajesRouter.get('/all/conversaciones/:nombreAgente', autenticarToken, async (req, res) => {
+  await mensajesController.obtenerConversacionesDeAgente(req, res);
+});
+
+
+
+
 export default mensajesRouter;

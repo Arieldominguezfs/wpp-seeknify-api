@@ -63,4 +63,26 @@ export class MensajesController {
   }
 }
 
+
+async obtenerConversacionesDeAgente(req: Request, res: Response): Promise<Response> {
+    try {
+      const { nombreAgente } = req.params;
+      const pagina = parseInt(req.query.pagina as string) || 1;
+      const limite = parseInt(req.query.limite as string) || 20;
+
+      const { conversaciones, total } = await this.mensajesService.obtenerConversacionesDeAgente(nombreAgente, pagina, limite);
+
+      return res.status(200).json({
+        conversaciones,
+        pagina,
+        limite,
+        total,
+        totalPaginas: Math.ceil(total / limite)
+      });
+    } catch (error) {
+      console.error('Error al obtener conversaciones del agente:', error);
+      return res.status(500).json({ error: 'Error interno del servidor.' });
+    }
+  }
+
 }

@@ -20,3 +20,22 @@ export async function buscarConversacionPorAgenteYCliente(nombreAgente: string, 
         .andWhere('cliente.numerowhatsapp = :numeroCliente', { numeroCliente })
         .getOne();
 }
+
+export async function obtenerConversacionesPorAgentePaginado(
+  nombreAgente: string,
+  pagina: number,
+  limite: number
+): Promise<{ conversaciones: Conversacion[]; total: number }> {
+  const offset = (pagina - 1) * limite;
+
+  const [conversaciones, total] = await ConversacionRepository.createQueryBuilder('conversacion')
+    .innerJoinAndSelect('conversacion.agente', 'agente')
+    .innerJoinAndSelect('conversacion.cliente', 'cliente')
+    .where('agente.nombre = :nombreAgente', { nombreAgente })
+    .orderBy('conversacion.fechainicio', 'DESC')
+    .skip(offset)
+    .take(limite)
+    .getManyAndCount();
+
+  return { conversaciones, total };
+}
